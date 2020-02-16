@@ -1,6 +1,6 @@
 
 def binarysearch(intList, n):
-    """fimd largest value in sorted list smaller than n"""
+    """find largest value in sorted list smaller than n"""
 
     if len(intList) == 1:
         return intList[0]
@@ -35,7 +35,14 @@ def partialsumfromlargest(sumList, candidateList, threshold, maxSum):
     return partialsumfromlargest(sumList, newCandidateList, threshold, newSum)
 
 
-M = 100
-pizzaList = [4, 14, 15, 18, 29, 32, 36, 82, 95, 95]
-pizzasoln = partialsumfromlargest([], pizzaList, .99, M)
-allsolns = [partialsumfromlargest([], pizzaList, 0.6 + j*0.01, M) for j in range(40)]
+def solve(problem):
+    selected_sizes = partialsumfromlargest([], problem["pizza_sizes"], 0.85, problem["max_slices"])
+
+    return [problem["pizza_sizes"].index(size) for size in selected_sizes]
+
+
+if __name__ == "__main__":
+    M = 100
+    pizzaList = [4, 14, 15, 18, 29, 32, 36, 82, 95, 95]
+    pizzasoln = partialsumfromlargest([], pizzaList, .99, M)
+    allsolns = [partialsumfromlargest([], pizzaList, 0.6 + j*0.01, M) for j in range(40)]
