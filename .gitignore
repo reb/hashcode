@@ -1,0 +1,6 @@
+.ropeproject/
+
+*/output/
+
+*__pycache__/
+.idea
