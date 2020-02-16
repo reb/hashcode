@@ -43,7 +43,11 @@ def setup_logging(debug):
 
 def main():
     parser = argparse.ArgumentParser(description="Solve awesome HashCode 2019")
-    parser.add_argument("input", type=str, nargs="+", help="input file")
+
+    inputs = parser.add_mutually_exclusive_group()
+    inputs.add_argument("--all", action="store_true", dest="all_input_files")
+    inputs.add_argument("input", type=str, nargs="*", help="input file(s)", default="")
+
     parser.add_argument("--tag", type=str, help="to tag the output file")
     parser.add_argument(
         "--problem", default="pizza", dest="problem_name", help="the problem to solve"
@@ -69,7 +73,7 @@ def main():
         )
         exit(1)
 
-    if args.input[0] == "*":
+    if args.all_input_files:
         input_files = get_all_input_files(args.problem_name)
     else:
         input_files = args.input
