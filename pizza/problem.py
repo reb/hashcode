@@ -1,7 +1,7 @@
 def read(text):
-    lines = text.split('\n')
-    [max_slices, different_pizzas] = [int(i) for i in lines[0].split(' ')]
-    pizza_sizes = [int(size) for size in lines[1].split(' ')]
+    lines = text.split("\n")
+    [max_slices, different_pizzas] = [int(i) for i in lines[0].split(" ")]
+    pizza_sizes = [int(size) for size in lines[1].split(" ")]
     return {
         "max_slices": max_slices,
         "different_pizzas": different_pizzas,
