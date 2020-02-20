@@ -50,7 +50,7 @@ def main():
 
     parser.add_argument("--tag", type=str, help="to tag the output file")
     parser.add_argument(
-        "--problem", default="pizza", dest="problem_name", help="the problem to solve"
+        "--problem", default="books", dest="problem_name", help="the problem to solve"
     )
     parser.add_argument("--solver", required=True, help="select a solver to use")
     parser.add_argument("--debug", action="store_true", help="add for debug logs")
