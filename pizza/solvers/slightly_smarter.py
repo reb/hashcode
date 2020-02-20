@@ -1,9 +1,10 @@
 import logging
 
-logger = logging.getLogger('slightly_smarter.py')
+logger = logging.getLogger("slightly_smarter.py")
+
 
 def solve(problem):
-    target= .95*problem["max_slices"]
+    target = 0.95 * problem["max_slices"]
     selected_pizzas, slices_taken, pizza_sizes = sub_solve(problem, target)
     logger.debug(f"Solved with {slices_taken} slices taken.")
     return selected_pizzas

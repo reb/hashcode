@@ -7,7 +7,7 @@ cache = {}
 
 
 def solve(problem):
-    sys.setrecursionlimit(10**6)
+    sys.setrecursionlimit(10 ** 6)
     selected_sizes, _ = best_selection(problem["pizza_sizes"], problem["max_slices"])
     logger.info(f"Found a solution with {sum(selected_sizes)} slices")
     return translate(problem["pizza_sizes"], selected_sizes)
@@ -30,18 +30,17 @@ def best_selection(possible_sizes, allowed):
         logger.debug("No sizes to pick from")
         return [], allowed
 
-
     # ignoring the biggest size
     logger.debug("Grabbing best without the biggest")
-    without_selection, without_allowed = best_selection(
-        possible_sizes[:-1], allowed
-    )
+    without_selection, without_allowed = best_selection(possible_sizes[:-1], allowed)
 
     biggest_size = possible_sizes[-1]
 
     # return already if the biggest_size doesn't fit into the allowed_size
     if allowed < biggest_size:
-        logger.debug("Selecting without %s, because only %s is allowed", biggest_size, allowed)
+        logger.debug(
+            "Selecting without %s, because only %s is allowed", biggest_size, allowed
+        )
         cache[(len(possible_sizes), allowed)] = (
             without_selection,
             without_allowed,
@@ -56,7 +55,9 @@ def best_selection(possible_sizes, allowed):
     with_allowed -= biggest_size
 
     if sum(without_selection) > sum(with_selection):
-        logger.debug("Selecting without %s, because the without amount is better", biggest_size)
+        logger.debug(
+            "Selecting without %s, because the without amount is better", biggest_size
+        )
         cache[(len(possible_sizes), allowed)] = (
             without_selection,
             without_allowed,
