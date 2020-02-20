@@ -1,3 +1,7 @@
+lib1 = {"book_ids":[4,5,6,1], "sign_up_days": 5, "shipping_capacity": 2, "books_in_library":4}
+lib2 = {"book_ids":[1,2,3,4,5,6], "sign_up_days": 2, "shipping_capacity": 3, "books_in_library":6}
+chosen_libraries = [lib1,lib2]
+
 def scan_choice(chosen_libraries):
 
     scan_list =[[] for i in range(len(chosen_libraries)-1)]
@@ -5,17 +9,18 @@ def scan_choice(chosen_libraries):
     all_books = [book for book in library["book_ids"] for library in chosen_libraries]
     
     book_unique = uniquelist(all_books) # checking which IDs are repeated and how often
-    for j in 0:range(book_unique)-1
-        number_options(j) = enumerate(all_books==book_unique)
+    print(len(book_unique))
+    for j in range(len(book_unique)-1):
+        number_options[j] = enumerate(all_books==book_unique)
     
     # sort book unique in decreasing order w.r.t. the value and reshuffle number_options in the appropriate way
     
     # full number of scans
     number_of_scans = sum([n_scans for n_scans in library["shipping_capacity"] for library in chosen_libraries])
     
-    remaining_scans  = number_of_scans;
+    remaining_scans  = number_of_scans
     
-    while remaining_scans > 0 and len(book_unique)>0
+    while remaining_scans > 0 and len(book_unique)>0:
         
         unscannable_books = [i for i,x in enumerate(number_options[0:remaining_scans]) if x==0]
         book_unique.pop(unscannable_books)
@@ -23,12 +28,12 @@ def scan_choice(chosen_libraries):
         
         only_one_chance = [i for i,x in enumerate(number_options[0:remaining_scans]) if x==1]
         
-        for book in only_one_chance
+        for book in only_one_chance:
             only_library = find_one_library(book, chosen_libraries)
-            if chosen_libraries[only_library]["shipping_capacity"]-len(scanned_lists[only_library]) < 1
+            if chosen_libraries[only_library]["shipping_capacity"]-len(scanned_lists[only_library]) < 1:
                 book_unique.pop(book)
                 number_options.pop(book)
-            else
+            else:
                 scan_list[only_library].append(books_unique[book])
                 remaining_scans -= 1
                 book_unique.pop(book)
@@ -54,20 +59,29 @@ def scan_choice(chosen_libraries):
 
 
 def uniquelist(list, idfunc=lambda x: x):
-"""uniquify a list of lists"""
+    """uniquify a list of lists"""
 
-seen = {}
-result = []
+    seen = {}
+    result = []
 
-for item in list:
-    marker = idfunc(tuple(item))
-    if marker in seen: continue
-    seen[marker] = 1
-    result.append(item)
-return result
+    for item in list:
+        marker = idfunc(tuple(item))
+        if marker in seen: continue
+        seen[marker] = 1
+        result.append(item)
+    return result
 
 
-def find_one_library(book, list_libraries)
-    for j in range(len(list_libraries)-1)
-        if book in list_libraries[j]["book_ids"]
+def find_one_library(book, list_libraries):
+    for j in range(len(list_libraries)-1):
+        if book in list_libraries[j]["book_ids"]:
             return j
+
+def find_library(book, list_libraries):
+    good_libs = []
+    for j in range(len(list_libraries)-1):
+        if book in list_libraries[j]["book_ids"]:
+            good_libs.append[j]
+    return good_libs
+
+scan_choice(chosen_libraries)
