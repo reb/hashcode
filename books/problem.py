@@ -33,6 +33,8 @@ def read(text):
 
 
 def write(solution):
+    # remove empty scanning queues
+    solution = [item for item in solution if item["book_ids"]]
     result = f"{len(solution)}\n"
     for library in solution:
         description = f"{library['id']} {len(library['book_ids'])}"
