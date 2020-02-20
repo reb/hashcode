@@ -6,7 +6,6 @@ def scan_choice(chosen_libraries):
     for library in chosen_libraries
         all_books = all_books.extend(library["book_ids"])
         number_of_scans += library["shipping_capacity"]
-        
     
     book_unique = uniquelist(all_books)
     number_options = 0*book_unique
@@ -56,7 +55,6 @@ def scan_choice(chosen_libraries):
     return scan_list
 
 
-
 def uniquelist(list):
 """uniquify a list of lists"""
     seen = []
@@ -74,10 +72,9 @@ def find_one_library(book, list_libraries):
             return j
     return false
             
-            
 def find_library(book, list_libraries):
     good_libs = []
     for j in range(len(list_libraries)-1):
         if book in list_libraries[j]["book_ids"]:
-            good_libs.append(j)
+            good_libs.append[j]
     return good_libs
