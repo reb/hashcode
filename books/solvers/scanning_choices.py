@@ -30,7 +30,7 @@ def scan_choice(chosen_libraries):
                 book_unique.pop(j)
                 number_options.pop(j)
                 j -= 1
-        for j in range(len(books_possible)-1)
+        for j in range(remaining_scans-1)
             # check which libraries has book(j) in their list
             # chose the library with most empty space in their scanning facility
 
