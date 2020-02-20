@@ -15,19 +15,21 @@ def scan_choice(chosen_libraries):
     
     #books_possible = book_unique[0:number_of_scans]
     #book_unique = book_unique[number_of_scans+1:]
-    scans_done_today = 0;
+    remaining_scans  = number_of_scans;
     
-    while scans_done_today < number_of_scans
-        for j in range(len(number_options)-1)
-            if number_options[j] <1
-                books_possible.pop(j)
+    while remaining_scans > 0 and len(book_unique)>0
+        for j in range(number_of_scans-1)
+            if number_options[j] < 1
+                book_unique.pop(j)
                 number_options.pop(j)
-                books_possible.append = book_unique.pop(0)
                 j -= 1
             else if number_options[j] == 1
+                # find which library has the book
                 scan_list[only_library].append(books_possible[j])
-                # add book_possible(j) to the list of scans of the only library available to scan it -- I   don't know how to do it (E)
-                # cancel the j-th book
+                remaining_scans -= 1
+                book_unique.pop(j)
+                number_options.pop(j)
+                j -= 1
         for j in range(len(books_possible)-1)
             # check which libraries has book(j) in their list
             # chose the library with most empty space in their scanning facility
