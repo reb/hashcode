@@ -31,28 +31,32 @@ def solve(problem: Problem) -> Solution:
     signup_round = 0
 
     for day in tqdm(range(problem.number_of_days)):
+        logger.debug("Starting day %s", day)
         if not scheduled_library_ids:
-            ranked_library_ids = rank_libraries(
-                problem.libraries,
-                solution.scanning_library_ids,
-                problem.number_of_days - day,
-            )
             new_signup_day = day
             signup_round += 1
             goal_day = signup_round * (problem.number_of_days / signup_rounds)
+            logger.debug("Scheduling libraries until day %s", goal_day)
+
+            ranked_library_ids = rank_libraries(
+                problem, solution.scanning_library_ids, problem.number_of_days - day
+            )
             while new_signup_day < goal_day and ranked_library_ids:
                 new_signup_id = ranked_library_ids.pop(0)
+                new_signup_day += problem.libraries[new_signup_id].signup_days
                 scheduled_library_ids.append(
                     ScheduledLibrary(new_signup_id, new_signup_day)
                 )
                 logger.debug(
-                    "Scheduled new library %s at day %s", new_signup_id, new_signup_day
+                    "Scheduled new library %s to start at day %s",
+                    new_signup_id,
+                    new_signup_day,
                 )
 
-            if scheduled_library_ids and scheduled_library_ids[0].starting_today(day):
-                new_scheduled_id = scheduled_library_ids.pop(0).library_id
-                solution.queue_library(new_scheduled_id)
-                logger.debug("Signed up new library %s", new_signup_id)
+        if scheduled_library_ids and scheduled_library_ids[0].starting_today(day):
+            new_scheduled_id = scheduled_library_ids.pop(0).library_id
+            solution.queue_library(new_scheduled_id)
+            logger.debug("Signed up new library %s", new_signup_id)
 
         for place in solution.scanning_queue:
             library = problem.libraries[place.library_id]
@@ -68,7 +72,7 @@ def rank_libraries(
 ) -> List[int]:
     ranked_libraries = []
 
-    for library_id in signed_libraries:
+    for library_id, _ in enumerate(problem.libraries):
         if library_id not in signed_libraries:
             value = library_value(library_id, problem, signed_libraries, days_left)
             ranked_libraries.append((value, library_id))
@@ -83,7 +87,7 @@ def library_value(
     library = problem.libraries[library_id]
 
     # how many books can it do
-    book_capacity = (days_left - library.signup_days) * library.shipping_capacity
+    book_capacity = (days_left - library.signup_days) * library.capacity
 
     # the greatest books should already be stored in front of the library list
     # divide by the number of libraries that are signed up with that book

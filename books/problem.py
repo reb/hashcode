@@ -59,7 +59,7 @@ class Solution:
         self.scanning_library_ids: List[int] = []
 
     def queue_library(self, library_id: int):
-        self.scanning_order.append(ScanningLibrary(library_id))
+        self.scanning_queue.append(ScanningLibrary(library_id))
         self.scanning_library_ids.append(library_id)
 
 
@@ -88,11 +88,11 @@ def read(text: str) -> Problem:
 
 def write(solution: Solution) -> str:
     # remove empty scanning queues
-    solution = [item for item in solution if item["book_ids"]]
-    result = f"{len(solution)}\n"
-    for library in solution:
-        description = f"{library['id']} {len(library['book_ids'])}"
-        book_ids = " ".join(str(book_id) for book_id in library["book_ids"])
+    scanning_queue = [item for item in solution.scanning_queue if item.book_ids]
+    result = f"{len(scanning_queue)}\n"
+    for item in scanning_queue:
+        description = f"{item.library_id} {len(item.book_ids)}"
+        book_ids = " ".join(str(book_id) for book_id in item.book_ids)
         result += f"{description}\n{book_ids}\n"
 
     return result
