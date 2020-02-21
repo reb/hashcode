@@ -39,8 +39,9 @@ class Problem:
     def append_library(self, library: Library):
         self.libraries.append(library)
 
-    def book_value(self, book_id: int) -> int:
-        return self.book_ids[book_id]
+    def remove_book(self, book_id):
+        for library in self.libraries:
+            library.remove_book(book_id)
 
 
 class ScanningLibrary:
@@ -54,10 +55,12 @@ class ScanningLibrary:
 
 class Solution:
     def __init__(self):
-        self.scanning_queue: List = []
+        self.scanning_queue: List[ScanningLibrary] = []
+        self.scanning_library_ids: List[int] = []
 
     def queue_library(self, library_id: int):
         self.scanning_order.append(ScanningLibrary(library_id))
+        self.scanning_library_ids.append(library_id)
 
 
 def read(text: str) -> Problem:

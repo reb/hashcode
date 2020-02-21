@@ -1,112 +1,100 @@
 import logging
+from typing import List
+
 from tqdm import tqdm
+
+from books.problem import Problem, Solution
 
 logger = logging.getLogger(__name__)
 
-libraries = None
-books = None
+
+class ScheduledLibrary:
+    def __init__(self, library_id: int, starting_day: int):
+        self.library_id = library_id
+        self.starting_day = starting_day
+
+    def starting_today(self, day):
+        return day == self.starting_day
 
 
-def solve(problem):
-    global libraries, books
-
-    books = {index: value for index, value in enumerate(problem["books"])}
+def solve(problem: Problem) -> Solution:
 
     # sort books by value
-    libraries = problem["libraries"]
-    for library in libraries:
-        library["book_ids"].sort(key=lambda book_id: books[book_id])
+    for library in problem.libraries:
+        library.sort_books_by_value(problem.books)
 
-    new_signup_at_day = 0
-    signed_libraries = set()
-    library_order = []
-    library_active = 0
+    solution = Solution()
+    scheduled_library_ids: List[ScheduledLibrary] = []
 
     # how many times do we want to do a signup round
     signup_rounds = 4
     signup_round = 0
 
-    for day in tqdm(range(problem["number_of_days"] + 1)):
-        if day == new_signup_at_day:
+    for day in tqdm(range(problem.number_of_days)):
+        if not scheduled_library_ids:
             ranked_library_ids = rank_libraries(
-                signed_libraries, problem["number_of_days"] - day
+                problem.libraries,
+                solution.scanning_library_ids,
+                problem.number_of_days - day,
             )
+            new_signup_day = day
             signup_round += 1
-            goal_day = signup_round * (problem["number_of_days"] / signup_rounds)
-            while new_signup_at_day < goal_day and ranked_library_ids:
+            goal_day = signup_round * (problem.number_of_days / signup_rounds)
+            while new_signup_day < goal_day and ranked_library_ids:
                 new_signup_id = ranked_library_ids.pop(0)
-                new_signup_at_day += libraries[new_signup_id]["signup_days"]
-                library_order.append(
-                    {
-                        "id": new_signup_id,
-                        "book_ids": [],
-                        "day_available": new_signup_at_day,
-                    }
+                scheduled_library_ids.append(
+                    ScheduledLibrary(new_signup_id, new_signup_day)
                 )
-                signed_libraries.add(new_signup_id)
+                logger.debug(
+                    "Scheduled new library %s at day %s", new_signup_id, new_signup_day
+                )
+
+            if scheduled_library_ids and scheduled_library_ids[0].starting_today(day):
+                new_scheduled_id = scheduled_library_ids.pop(0).library_id
+                solution.queue_library(new_scheduled_id)
                 logger.debug("Signed up new library %s", new_signup_id)
 
-        if (
-            len(library_order) != library_active
-            and library_order[library_active]["day_available"] == day
-        ):
-            library_active += 1
-        available_libraries = library_order[:library_active]
-        scan_todays_books(available_libraries)
+        for place in solution.scanning_queue:
+            library = problem.libraries[place.library_id]
+            for book_id in library.book_ids[: library.capacity]:
+                place.queue_book(book_id)
+                problem.remove_book(book_id)
 
-    return library_order
+    return solution
 
 
-def scan_todays_books(available_libraries):
-    global libraries
-    for scanning_library in available_libraries:
-        library = libraries[scanning_library["id"]]
-        scanning_books = library["book_ids"][: library["shipping_capacity"]]
-        for book_id in scanning_books:
-            remove_book(book_id)
-        scanning_library["book_ids"].extend(scanning_books)
-
-
-def remove_book(book_id):
-    """Remove a book from the global variables"""
-    global libraries, books
-    for library in libraries:
-        if book_id in library["book_ids"]:
-            library["book_ids"].remove(book_id)
-    books.pop(book_id)
-
-
-def rank_libraries(signed_libraries, days_left):
-    global libraries
-
+def rank_libraries(
+    problem: Problem, signed_libraries: List[int], days_left: int
+) -> List[int]:
     ranked_libraries = []
 
-    for library_id, library in enumerate(libraries):
+    for library_id in signed_libraries:
         if library_id not in signed_libraries:
-            value = library_value(library_id, signed_libraries, days_left)
+            value = library_value(library_id, problem, signed_libraries, days_left)
             ranked_libraries.append((value, library_id))
 
-    ranked_libraries.sort()
+    ranked_libraries.sort(reverse=True)
     return [library_id for _, library_id in ranked_libraries]
 
 
-def library_value(library_id, signed_libraries, days_left):
-    global libraries, books
-    library = libraries[library_id]
+def library_value(
+    library_id: int, problem: Problem, signed_libraries: List[int], days_left: int
+) -> float:
+    library = problem.libraries[library_id]
 
     # how many books can it do
-    book_capacity = (days_left - library["signup_days"]) * library["shipping_capacity"]
+    book_capacity = (days_left - library.signup_days) * library.shipping_capacity
 
     # the greatest books should already be stored in front of the library list
     # divide by the number of libraries that are signed up with that book
     total_value = 0.0
-    for book_id in library["book_ids"][:book_capacity]:
+    for book_id in library.book_ids[:book_capacity]:
         amount_of_libraries = 0
-        for library_id in signed_libraries:
-            library = libraries[library_id]
-            if book_id in library["book_ids"]:
+        for signed_library_id in signed_libraries:
+            signed_library = problem.libraries[signed_library_id]
+            if book_id in signed_library.book_ids:
                 amount_of_libraries += 1
-        total_value += float(books[book_id] / (amount_of_libraries + 1))
+        total_value += float(problem.books[book_id] / (amount_of_libraries + 1))
 
     logger.debug("Found value %s for library %s", total_value, library_id)
     return total_value
