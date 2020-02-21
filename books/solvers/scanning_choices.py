@@ -1,5 +1,8 @@
 from operator import itemgetter
 
+
+
+
 def scan_choice(chosen_libraries,values):
 
     scan_list = {}
