@@ -9,18 +9,32 @@ books = None
 
 def solve(problem):
     global libraries, books
-    libraries = problem["libraries"]
+
     books = {index: value for index, value in enumerate(problem["books"])}
+
+    # sort books by value
+    libraries = problem["libraries"]
+    for library in libraries:
+        library["book_ids"].sort(key=lambda book_id: books[book_id])
 
     new_signup_at_day = 0
     signed_libraries = set()
     library_order = []
     library_active = 0
+
+    # how many times do we want to do a signup round
+    signup_rounds = 4
+    signup_round = 0
+
     for day in tqdm(range(problem["number_of_days"] + 1)):
         if day == new_signup_at_day:
-            for new_signup_id in rank_libraries(
+            ranked_library_ids = rank_libraries(
                 signed_libraries, problem["number_of_days"] - day
-            ):
+            )
+            signup_round += 1
+            goal_day = signup_round * (problem["number_of_days"] / signup_rounds)
+            while new_signup_at_day < goal_day and ranked_library_ids:
+                new_signup_id = ranked_library_ids.pop(0)
                 new_signup_at_day += libraries[new_signup_id]["signup_days"]
                 library_order.append(
                     {
@@ -83,18 +97,16 @@ def library_value(library_id, signed_libraries, days_left):
     # how many books can it do
     book_capacity = (days_left - library["signup_days"]) * library["shipping_capacity"]
 
-    # what are the greatest values
-    book_values = sorted([(books[book_id], book_id) for book_id in library["book_ids"]])
-
+    # the greatest books should already be stored in front of the library list
     # divide by the number of libraries that are signed up with that book
     total_value = 0.0
-    for value, book_id in book_values[:book_capacity]:
+    for book_id in library["book_ids"][:book_capacity]:
         amount_of_libraries = 0
         for library_id in signed_libraries:
             library = libraries[library_id]
             if book_id in library["book_ids"]:
                 amount_of_libraries += 1
-        total_value += float(value / (amount_of_libraries + 1))
+        total_value += float(books[book_id] / (amount_of_libraries + 1))
 
     logger.debug("Found value %s for library %s", total_value, library_id)
     return total_value
