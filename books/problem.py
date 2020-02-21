@@ -49,8 +49,8 @@ class Problem:
         self.libraries.append(library)
 
     def remove_book(self, book_id):
-        for library in self.libraries:
-            library.remove_book(book_id)
+        for library_id in self.books[book_id].in_libraries:
+            self.libraries[library_id].remove_book(book_id)
 
 
 class ScanningLibrary:
@@ -80,6 +80,7 @@ def read(text: str) -> Problem:
     book_values = [int(i) for i in lines[1].split(" ")]
     problem = Problem(number_of_books, number_of_libraries, number_of_days, book_values)
 
+    library_id = 0
     for index in range(2, len(lines) - 2, 2):
         if not lines[index]:
             continue
@@ -91,6 +92,11 @@ def read(text: str) -> Problem:
         problem.append_library(
             Library(books_in_library, signup_days, capacity, book_ids)
         )
+        # keep track of which libraries have this book
+        for book_id in book_ids:
+            problem.books[book_id].add_to_library(library_id)
+
+        library_id += 1
 
     return problem
 
