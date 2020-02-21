@@ -98,7 +98,7 @@ def library_value(
             signed_library = problem.libraries[signed_library_id]
             if book_id in signed_library.book_ids:
                 amount_of_libraries += 1
-        total_value += float(problem.books[book_id] / (amount_of_libraries + 1))
+        total_value += float(problem.books[book_id].value / (amount_of_libraries + 1))
 
     logger.debug("Found value %s for library %s", total_value, library_id)
     return total_value

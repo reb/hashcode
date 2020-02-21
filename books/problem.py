@@ -1,6 +1,15 @@
 from typing import List
 
 
+class Book:
+    def __init__(self, value):
+        self.value = value
+        self.in_libraries = set()
+
+    def add_to_library(self, library_id):
+        self.in_libraries.add(library_id)
+
+
 class Library:
     def __init__(
         self, number_of_books: int, signup_days: int, capacity: int, book_ids: List[int]
@@ -18,8 +27,8 @@ class Library:
             self.book_ids.remove(book_id)
             self.number_of_books -= 1
 
-    def sort_books_by_value(self, books: List[int]):
-        self.book_ids.sort(key=lambda book_id: books[book_id], reverse=True)
+    def sort_books_by_value(self, books: List[Book]):
+        self.book_ids.sort(key=lambda book_id: books[book_id].value, reverse=True)
 
 
 class Problem:
@@ -28,13 +37,13 @@ class Problem:
         number_of_books: int,
         number_of_libraries: int,
         number_of_days: int,
-        books: List[int],
+        book_values: List[int],
     ):
         self.number_of_books = number_of_books
         self.number_of_libraries = number_of_libraries
         self.number_of_days = number_of_days
-        self.books = books
-        self.libraries = []
+        self.books: List[Book] = [Book(value) for value in book_values]
+        self.libraries: List[Library] = []
 
     def append_library(self, library: Library):
         self.libraries.append(library)
@@ -68,8 +77,8 @@ def read(text: str) -> Problem:
     [number_of_books, number_of_libraries, number_of_days] = [
         int(i) for i in lines[0].split(" ")
     ]
-    books = [int(i) for i in lines[1].split(" ")]
-    problem = Problem(number_of_books, number_of_libraries, number_of_days, books)
+    book_values = [int(i) for i in lines[1].split(" ")]
+    problem = Problem(number_of_books, number_of_libraries, number_of_days, book_values)
 
     for index in range(2, len(lines) - 2, 2):
         if not lines[index]:
