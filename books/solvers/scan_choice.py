@@ -1,13 +1,17 @@
+from collections import defaultdict
 from operator import itemgetter
 from typing import List
 from books.problem import Problem, Solution
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def scan_choice(problem: Problem, chosen_library_ids: List[int]) -> Solution:
-    scan_list = {}
+    scan_list = defaultdict(list)
 
     # cancelling libraries with no book
-    nonempty_library_ids = filter(lambda library_id: problem.libraries[library_id].book_ids, chosen_library_ids)
+    nonempty_library_ids = list(filter(lambda library_id: problem.libraries[library_id].book_ids, chosen_library_ids))
 
     # how many scans are there between all the libraries
     remaining_scans = sum([problem.libraries[library_id].capacity for library_id in nonempty_library_ids])
@@ -21,9 +25,9 @@ def scan_choice(problem: Problem, chosen_library_ids: List[int]) -> Solution:
                 dict_of_books[book_id]["libraries"].append(library_id)
                 dict_of_books[book_id]["number_of_libraries"] += 1
             else:
-                value_loc = problem.books[book_id]
+                value = problem.books[book_id].value
                 dict_of_books[book_id] = {"libraries": [library_id],
-                                          "value": value_loc,
+                                          "value": value,
                                           "book_id": book_id,
                                           "number_of_libraries": 1}
 
@@ -32,40 +36,46 @@ def scan_choice(problem: Problem, chosen_library_ids: List[int]) -> Solution:
     list_of_books.sort(key=itemgetter("value"))
 
     # best books to scan
-    slice = list_of_books[0:remaining_scans]
+    #slice = list_of_books[0:remaining_scans]
 
-    for book in slice:
+    for book in list_of_books[0:remaining_scans]:
         if book["number_of_libraries"] == 1:
-            only_library_id = book["libraries"]
+            only_library_id = book["libraries"][0]
             # library can still scan?
             if problem.libraries[only_library_id].capacity - len(scan_list[only_library_id]) < 1:
-                slice.pop(book)
-                list_of_books.pop(book)
-                slice.append(list_of_books[remaining_scans])
+                #slice.remove(book)
+                list_of_books.remove(book)
+                #slice.append(list_of_books[remaining_scans])
             else:
-                scan_list[only_library_id].append(book_id["book_id"])
+                #logger.debug("adding stuff")
+                scan_list[only_library_id].append(book["book_id"])
                 remaining_scans -= 1
-                slice.pop(book)
-                list_of_books.pop(book)
+                #slice.remove(book)
+                list_of_books.remove(book)
 
     while remaining_scans > 0 and list_of_books:
 
         interesting_book = list_of_books[0]
         available_libraries = interesting_book["libraries"]
-        best_library = available_libraries[0]
-        best_condition = problem.libraries[chosen_library_ids[best_library]].capacity - len(scan_list[best_library])
-        for j in range(len(available_libraries) - 1):
-            optimality_condition = problem.libraries[chosen_library_ids[j]].capacity - len(scan_list[j])
+        best_library_id = available_libraries[0]
+        best_condition = problem.libraries[best_library_id].capacity - len(scan_list[best_library_id])
+        for library_id in available_libraries:
+            optimality_condition = problem.libraries[library_id].capacity - len(scan_list[library_id])
             if optimality_condition > best_condition:
-                best_library = j
+                best_library_id = library_id
                 best_condition = optimality_condition
+
         if best_condition > 0:
-            scan_list[best_library].append(interesting_book)
+            scan_list[best_library_id].append(interesting_book["book_id"])
             remaining_scans -= 1
-            list_of_books.pop(interesting_book)
+            list_of_books.pop(0)
+            #logger.debug("adding one book")
+            #slice.pop(0)
         else:
-            slice.pop(interesting_book)
-            list_of_books.pop(interesting_book)
-            slice.append(list_of_books[remaining_scans])
+            #slice.pop(0)
+            list_of_books.pop(0)
+            #logger.debug("throwing away one book")
+            # check last book
+            #slice.append(list_of_books[remaining_scans])
 
     return scan_list
