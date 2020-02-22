@@ -38,20 +38,20 @@ def scan_choice(problem: Problem, chosen_library_ids: List[int]) -> Solution:
     # best books to scan
     #slice = list_of_books[0:remaining_scans]
 
-    for book in list_of_books[0:remaining_scans]:
-        if book["number_of_libraries"] == 1:
-            only_library_id = book["libraries"][0]
-            # library can still scan?
-            if problem.libraries[only_library_id].capacity - len(scan_list[only_library_id]) < 1:
-                #slice.remove(book)
-                list_of_books.remove(book)
-                #slice.append(list_of_books[remaining_scans])
-            else:
-                #logger.debug("adding stuff")
-                scan_list[only_library_id].append(book["book_id"])
-                remaining_scans -= 1
-                #slice.remove(book)
-                list_of_books.remove(book)
+    #for book in list_of_books[0:remaining_scans]:
+    #    if book["number_of_libraries"] == 1:
+    #        only_library_id = book["libraries"][0]
+    #        # library can still scan?
+    #        if problem.libraries[only_library_id].capacity - len(scan_list[only_library_id]) < 1:
+    #            #slice.remove(book)
+    #            list_of_books.remove(book)
+    #            #slice.append(list_of_books[remaining_scans])
+    #        else:
+    #            #logger.debug("adding stuff")
+    #            scan_list[only_library_id].append(book["book_id"])
+    #            remaining_scans -= 1
+    #            #slice.remove(book)
+    #            list_of_books.remove(book)
 
     while remaining_scans > 0 and list_of_books:
 
