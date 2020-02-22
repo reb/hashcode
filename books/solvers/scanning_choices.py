@@ -39,20 +39,20 @@ def scan_choice(problem: Problem, chosen_libraries: List[int]):
     list_of_books.sort(key=itemgetter("value"))
 
     # best books to scan
-    slice = list_of_books[0:remaining_scans]
+    slice_books = list_of_books[0:remaining_scans]
 
-    for book in slice:
+    for book in slice_books:
         if book["number_of_libraries"] == 1:
             only_library = book["libraries"]
             # library can still scan?
             if chosen_libraries[only_library]["shipping_capacity"] - len(scan_list[only_library]) < 1:
-                slice.pop(book)
+                slice_books.pop(book)
                 list_of_books.pop(book)
-                slice.append(list_of_books[remaining_scans])
+                slice_books.append(list_of_books[remaining_scans])
             else:
                 scan_list[only_library].append(book["book_id"])
                 remaining_scans -= 1
-                slice.pop(book)
+                slice_books.pop(book)
                 list_of_books.pop(book)
 
     while remaining_scans > 0 and len(list_of_books) > 0:
