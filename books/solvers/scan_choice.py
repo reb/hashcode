@@ -35,24 +35,6 @@ def scan_choice(problem: Problem, chosen_library_ids: List[int]) -> Solution:
     list_of_books = list(dict_of_books.values())
     list_of_books.sort(key=itemgetter("value"))
 
-    # best books to scan
-    #slice = list_of_books[0:remaining_scans]
-
-    #for book in list_of_books[0:remaining_scans]:
-    #    if book["number_of_libraries"] == 1:
-    #        only_library_id = book["libraries"][0]
-    #        # library can still scan?
-    #        if problem.libraries[only_library_id].capacity - len(scan_list[only_library_id]) < 1:
-    #            #slice.remove(book)
-    #            list_of_books.remove(book)
-    #            #slice.append(list_of_books[remaining_scans])
-    #        else:
-    #            #logger.debug("adding stuff")
-    #            scan_list[only_library_id].append(book["book_id"])
-    #            remaining_scans -= 1
-    #            #slice.remove(book)
-    #            list_of_books.remove(book)
-
     while remaining_scans > 0 and list_of_books:
 
         interesting_book = list_of_books[0]
@@ -60,22 +42,19 @@ def scan_choice(problem: Problem, chosen_library_ids: List[int]) -> Solution:
         best_library_id = available_libraries[0]
         best_condition = problem.libraries[best_library_id].capacity - len(scan_list[best_library_id])
         for library_id in available_libraries:
-            optimality_condition = problem.libraries[library_id].capacity - len(scan_list[library_id])
-            if optimality_condition > best_condition:
-                best_library_id = library_id
-                best_condition = optimality_condition
+            if library_id in chosen_library_ids:
+                optimality_condition = problem.libraries[library_id].capacity - len(scan_list[library_id])
+                if optimality_condition > best_condition:
+                    best_library_id = library_id
+                    best_condition = optimality_condition
 
         if best_condition > 0:
             scan_list[best_library_id].append(interesting_book["book_id"])
+            if len(scan_list[best_library_id]) == problem.libraries[best_library_id].capacity:
+                chosen_library_ids.remove(library_id)
             remaining_scans -= 1
             list_of_books.pop(0)
-            #logger.debug("adding one book")
-            #slice.pop(0)
         else:
-            #slice.pop(0)
             list_of_books.pop(0)
-            #logger.debug("throwing away one book")
-            # check last book
-            #slice.append(list_of_books[remaining_scans])
 
     return scan_list
