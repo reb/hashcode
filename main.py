@@ -60,14 +60,16 @@ def main():
 
     try:
         problem_module = importlib.import_module(f"{args.problem_name}.problem")
-    except ImportError:
+    except ImportError as err:
+        logger.error(err)
         logger.error(
             f"Problem module is not available. Create a read and write method in the file '{args.problem_name}/problem.py'."
         )
         exit(1)
     try:
         solver = importlib.import_module(f"{args.problem_name}.solvers.{args.solver}")
-    except ImportError:
+    except ImportError as err:
+        logger.error(err)
         logger.error(
             f"Solver {args.solver} not available. Create a solve function in the file 'solvers/{args.solver}.py'."
         )
