@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def scan_choice(problem: Problem, chosen_library_ids: List[int]) -> Solution:
+def scan_choice(problem: Problem, chosen_library_ids: List[int]):
     scan_list = defaultdict(list)
 
     # cancelling libraries with no book
