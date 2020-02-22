@@ -57,9 +57,13 @@ class ScanningLibrary:
     def __init__(self, library_id: int):
         self.library_id = library_id
         self.book_ids: List[int] = []
+        self.capacity = 0
 
     def queue_book(self, book_id: int):
         self.book_ids.append(book_id)
+
+    def set_scanning_capacity(self, problem: Problem):
+        self.capacity = problem.libraries[self.library_id].capacity
 
 
 class Solution:

@@ -4,6 +4,7 @@ from typing import List
 from tqdm import tqdm
 
 from books.problem import Problem, Solution
+from books.solvers.scan_choice import scan_choice
 
 logger = logging.getLogger(__name__)
 
@@ -58,12 +59,9 @@ def solve(problem: Problem) -> Solution:
             solution.queue_library(new_scheduled_id)
             logger.debug("Signed up new library %s", new_signup_id)
 
-        for place in solution.scanning_queue:
-            library = problem.libraries[place.library_id]
-            for book_id in library.book_ids[: library.capacity]:
-                place.queue_book(book_id)
-                problem.remove_book(book_id)
-
+        scan_choice(problem,solution.scanning_library_ids)
+    
+    
     return solution
 
 
