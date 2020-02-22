@@ -1,4 +1,7 @@
+import logging
 from typing import List
+
+logger = logging.getLogger(__name__)
 
 
 class Book:
@@ -103,6 +106,40 @@ def read(text: str) -> Problem:
         library_id += 1
 
     return problem
+
+
+def analyze(problem: Problem, solution: Solution):
+    library_active_at_day = 0
+    scanned_book_ids = set()
+    for place in solution.scanning_queue:
+        library = problem.libraries[place.library_id]
+        library_active_at_day += library.signup_days
+        scan_capacity = (
+            problem.number_of_days - library_active_at_day
+        ) * library.capacity
+        if library.number_of_books > len(place.book_ids) and scan_capacity > len(
+            place.book_ids
+        ):
+            logger.info(
+                f"Could have scanned more books in library {place.library_id}, currently scanning "
+                f"{len(place.book_ids)} while it has capacity for {scan_capacity} and contains "
+                f"{library.number_of_books} books"
+            )
+        if len(place.book_ids) > scan_capacity:
+            logger.info(
+                f"Scanning more books than possible in library {place.library_id}, scanning {len(place.book_ids)} "
+                f"while there is capacity for {scan_capacity}"
+            )
+        for book_id in place.book_ids[:scan_capacity]:
+            if book_id in scanned_book_ids:
+                logger.info(
+                    f"Already scanned book {book_id}, trying to scan it again in library {place.library_id}"
+                )
+            else:
+                scanned_book_ids.add(book_id)
+
+    expected_value = sum(problem.books[book_id].value for book_id in scanned_book_ids)
+    logger.info(f"Expecting the solution to have a value of {expected_value}")
 
 
 def write(solution: Solution) -> str:

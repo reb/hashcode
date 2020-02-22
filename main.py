@@ -54,6 +54,9 @@ def main():
     )
     parser.add_argument("--solver", required=True, help="select a solver to use")
     parser.add_argument("--debug", action="store_true", help="add for debug logs")
+    parser.add_argument(
+        "--analyze", action="store_true", help="add for analysis of the solution"
+    )
     args = parser.parse_args()
 
     setup_logging(args.debug)
@@ -83,6 +86,10 @@ def main():
     for input_file in input_files:
         problem = read_file(input_file, args.problem_name, problem_module.read)
         solution = solver.solve(problem)
+
+        if args.analyze:
+            problem_module.analyze(problem, solution)
+
         write_file(
             input_file, args.tag, args.problem_name, solution, problem_module.write
         )
