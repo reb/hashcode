@@ -59,10 +59,18 @@ def solve(problem: Problem) -> Solution:
             solution.queue_library(new_scheduled_id)
             logger.debug("Signed up new library %s", new_signup_id)
 
-        scan_choice(problem,solution.scanning_library_ids)
-    
-    
+        planned_books = scan_choice(problem, solution.scanning_library_ids)
+        plan_books(problem, solution, planned_books)
+
     return solution
+
+
+def plan_books(problem: Problem, solution: Solution, planned_books: dict):
+    for place in solution.scanning_queue:
+        book_ids_for_library = planned_books.get(place.library_id, [])
+        place.book_ids.extend(book_ids_for_library)
+        for book_id in book_ids_for_library:
+            problem.remove_book(book_id)
 
 
 def rank_libraries(
