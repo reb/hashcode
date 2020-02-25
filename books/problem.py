@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Set
 
 logger = logging.getLogger(__name__)
 
@@ -72,11 +72,11 @@ class ScanningLibrary:
 class Solution:
     def __init__(self):
         self.scanning_queue: List[ScanningLibrary] = []
-        self.scanning_library_ids: List[int] = []
+        self.scanning_library_ids: Set[int] = set()
 
     def queue_library(self, library_id: int):
         self.scanning_queue.append(ScanningLibrary(library_id))
-        self.scanning_library_ids.append(library_id)
+        self.scanning_library_ids.add(library_id)
 
 
 def read(text: str) -> Problem:
@@ -103,6 +103,12 @@ def read(text: str) -> Problem:
         for book_id in book_ids:
             problem.books[book_id].add_to_library(library_id)
 
+        logger.debug(
+            "Library %s takes %s days to signup and has %s books",
+            library_id,
+            signup_days,
+            len(book_ids),
+        )
         library_id += 1
 
     return problem
