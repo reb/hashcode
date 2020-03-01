@@ -24,6 +24,7 @@ class Library:
         self.signup_days = signup_days
         self.capacity = capacity
         self.book_ids = book_ids
+        self.book_ids_set = set(book_ids)
 
     def remove_book(self, book_id: int):
         if book_id in self.book_ids:
