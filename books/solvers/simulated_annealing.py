@@ -21,8 +21,10 @@ def solve(problem: Problem) -> Solution:
     temperature = 10_000.0
 
     library_ids_order = [library_id for library_id in range(problem.number_of_libraries)]
+    # start with libraries sorted by signup time
+    library_ids_order.sort(key=lambda library_id: problem.libraries[library_id].signup_days)
     # start with a random order
-    random.shuffle(library_ids_order)
+    # random.shuffle(library_ids_order)
 
     for _ in range(restarts):
         library_ids_order = simulated_annealing(library_ids_order, problem, temperature, steps)
