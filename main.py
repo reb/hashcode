@@ -30,7 +30,7 @@ def read_file(file_name, problem_name, read):
 
 def get_all_input_files(problem_name):
     path = f"{problem_name}/input"
-    return [f for f in listdir(path) if isfile(join(path, f))]
+    return sorted(f for f in listdir(path) if isfile(join(path, f)))
 
 
 def setup_logging(debug):
