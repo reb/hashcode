@@ -14,16 +14,25 @@ def solve(problem: Problem) -> Solution:
     # seed solution so we have the same random values for debug purposes
     # random.seed("simulated_annealing")
 
-    steps = int(problem.number_of_libraries * (problem.number_of_libraries - 1) / 2)
+    steps = problem.number_of_libraries
+    restarts = 1
 
     # max value of the solution is all books
     temperature = 10_000.0
-    reduction_rate = float(temperature / steps)
 
-    # start with a random order
     library_ids_order = [library_id for library_id in range(problem.number_of_libraries)]
+    # start with a random order
     random.shuffle(library_ids_order)
+
+    for _ in range(restarts):
+        library_ids_order = simulated_annealing(library_ids_order, problem, temperature, steps)
+
+    return to_solution(library_ids_order, problem)
+
+
+def simulated_annealing(library_ids_order: List[int], problem: Problem, temperature: float, steps: int) -> List[int]:
     current_value = value(library_ids_order, problem)
+    reduction_rate = float(temperature / steps)
 
     # do simulated annealing
     pbar = tqdm(range(steps))
@@ -40,8 +49,7 @@ def solve(problem: Problem) -> Solution:
 
         temperature -= reduction_rate
 
-    return to_solution(library_ids_order, problem)
-
+    return library_ids_order
 
 def accept_new(current_value: int, new_value: int, temperature: float) -> bool:
     if current_value <= new_value:
