@@ -146,7 +146,7 @@ def analyze(problem: Problem, solution: Solution):
                 scanned_book_ids.add(book_id)
 
     expected_value = sum(problem.books[book_id].value for book_id in scanned_book_ids)
-    logger.info(f"Expecting the solution to have a value of {expected_value}")
+    logger.info(f"Expecting the solution to have a value of {expected_value:,}")
 
 
 def write(solution: Solution) -> str:
