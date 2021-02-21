@@ -18,6 +18,7 @@ def create(
     for p1 in problem.pizzas:
         for p2 in problem.pizzas[p1.id + 1 :]:
             matrix[p1.id, p2.id] = distance_function(p1, p2)
+    matrix = matrix + matrix.T
     return matrix
 
 
