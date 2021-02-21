@@ -3,8 +3,8 @@ from typing import List
 
 from tqdm import tqdm
 
-from books.problem import Problem, Solution
-from books.solvers.scan_choice import scan_choice
+from books2020.problem import Problem, Solution
+from books2020.solvers.scan_choice import scan_choice
 
 logger = logging.getLogger(__name__)
 

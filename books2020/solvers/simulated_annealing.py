@@ -5,7 +5,7 @@ from typing import List
 
 from tqdm import tqdm
 
-from books.problem import Problem, Solution
+from books2020.problem import Problem, Solution
 
 logger = logging.getLogger(__name__)
 

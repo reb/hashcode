@@ -1,7 +1,7 @@
 from collections import defaultdict
 from operator import itemgetter
 from typing import List
-from books.problem import Problem, Solution
+from books2020.problem import Problem, Solution
 import logging
 
 logger = logging.getLogger(__name__)
