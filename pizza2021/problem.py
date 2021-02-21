@@ -17,12 +17,21 @@ class Problem:
         self.t4 = t4
 
 
+class Delivery:
+    def __init__(self, team_size: int, pizzas: List[int]):
+        self.team_size = team_size
+        self.pizzas = pizzas
+
+    def __str__(self):
+        return f"{self.team_size} {' '.join(str(p) for p in self.pizzas)}"
+
+
 class Solution:
     def __init__(self):
-        self.deliveries = {}
+        self.deliveries = []
 
     def add_delivery(self, team_size: int, pizzas: List[int]):
-        self.deliveries[team_size] = pizzas
+        self.deliveries.append(Delivery(team_size, pizzas))
 
 
 def read(text: str) -> Problem:
@@ -40,6 +49,7 @@ def write(solution: Solution) -> str:
     """
 
     output_lines = [f"{len(solution.deliveries)}"]
-    for team_size, pizzas in solution.deliveries.items():
-        output_lines.append(f"{team_size} {' '.join(str(p) for p in pizzas)}")
+
+    for delivery in solution.deliveries:
+        output_lines.append(str(delivery))
     return "\n".join((output_lines))
