@@ -35,23 +35,29 @@ def score_pizza(*pizzas):
     """Return a score for a delivery consisting of these pizzas"""
     return len(set.union(*pizzas)) ** 2
 
+
 bp = best_pair(pizzas, pizza_compatibility_array, tuple(range(N)))
 print(bp)
 
+
 def best_triple(pizza_compatibility_array, available_pizzas):
-    best_two_pizzas = np.where(pizza_compatibility_array[available_pizzas, available_pizzas]
-                               == np.amax(pizza_compatibility_array[available_pizzas, available_pizzas]))
+    best_two_pizzas_all = best_pair(pizzas, pizza_compatibility_array)
     # best_two_pizzas has format (array([2], dtype=int32), array([0], dtype=int32))
-    fitness_row_pizza = np.average(pizza_compatibility_array[best_two_pizzas[1], available_pizzas])
-    fitness_column_pizza = np.average(pizza_compatibility_array[available_pizzas, best_two_pizzas[0]])
-    two_pizzas = np.array([available_pizzas[best_two_pizzas[:]]])
-    if fitness_row_pizza > fitness_column_pizza:
-        yummy_pizza = best_two_pizzas[1]
-    else:
-        yummy_pizza = best_two_pizzas[0]
-    np.delete(available_pizzas, np.where(available_pizzas == best_two_pizzas), 1)
-    np.delete(available_pizzas, np.where(available_pizzas == best_two_pizzas), 0)
-    best_third_pizza = np.where(pizza_compatibility_array[available_pizzas, yummy_pizza] == np.amax(pizza_compatibility_array[available_pizzas, yummy_pizza]))
-    three_pizzas = np.concatenate(two_pizzas, np.array(available_pizzas[best_third_pizza]))
+    best_two_pizzas = np.sort(best_two_pizzas_all[0])
+    two_pizzas_index = np.array([available_pizzas[best_two_pizzas[0]], available_pizzas[best_two_pizzas[1]]])
+    available_pizzas = np.delete(available_pizzas, best_two_pizzas[1])
+    available_pizzas = np.delete(available_pizzas, best_two_pizzas[0])
+    fitness_row_pizza = pizza_compatibility_array[best_two_pizzas[1], available_pizzas]
+    fitness_column_pizza = pizza_compatibility_array[available_pizzas, best_two_pizzas[0]]
+    yummy_pizza = np.multiply(fitness_row_pizza, fitness_column_pizza)
+    # best_third_pizza_position = np.where(yummy_pizza == np.amax(yummy_pizza))
+    best_third_pizza_position = np.unravel_index(np.argmax(yummy_pizza, axis=None), yummy_pizza.shape)
+    best_third_pizza = best_third_pizza_position[0]
+    index_third_pizza = np.array([available_pizzas[best_third_pizza]])
+    three_pizzas = np.concatenate((two_pizzas_index, index_third_pizza))
     return three_pizzas
 
+
+mask_array = np.array(range(pizza_compatibility_array.shape[0]))
+bt = best_triple(pizza_compatibility_array, mask_array)
+print(bt)
