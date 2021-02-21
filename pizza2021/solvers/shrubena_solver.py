@@ -19,16 +19,16 @@ for j in range(N):
     pizza_compatibility_array[j, j] = 0
 
 
-def best_pair(pizzas, pizza_compatibility_array):
+def best_pair(pizzas, pizza_compatibility_array, index_mask):
     """Find the best two team pizza"""
-    max_idx = np.where(pizza_compatibility_array == np.max(pizza_compatibility_array))  # find entries which are maximal
+    available_pizzas = pizza_compatibility_array
+    max_idx = np.where(pizza_compatibility_array[np.ix_(index_mask, index_mask)] == np.max(pizza_compatibility_array[
+        np.ix_(index_mask, index_mask)]))  # find entries which are maximal
     best_pair_candidates = [(i, j) for (i, j) in list(zip(*max_idx)) if i < j]
-    pair_scores = [score_pizza(pizzas[i], pizzas[j]) for (i,j) in best_pair_candidates]
+    pair_scores = [score_pizza(pizzas[i], pizzas[j]) for (i, j) in best_pair_candidates]
     best_score = np.max(pair_scores)
     best_pair_idx = np.where(pair_scores == best_score)[0][0]
-    print(best_pair_idx)
     return best_pair_candidates[best_pair_idx], best_score
-
 
 
 def score_pizza(*pizzas):
@@ -36,5 +36,6 @@ def score_pizza(*pizzas):
     return len(set.union(*pizzas)) ** 2
 
 
-bp = best_pair(pizzas, pizza_compatibility_array)
+bp = best_pair(pizzas, pizza_compatibility_array, tuple(range(N)))
 print(bp)
+
