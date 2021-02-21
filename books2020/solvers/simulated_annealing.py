@@ -20,19 +20,27 @@ def solve(problem: Problem) -> Solution:
     # max value of the solution is all books
     temperature = 10_000.0
 
-    library_ids_order = [library_id for library_id in range(problem.number_of_libraries)]
+    library_ids_order = [
+        library_id for library_id in range(problem.number_of_libraries)
+    ]
     # start with libraries sorted by signup time
-    library_ids_order.sort(key=lambda library_id: problem.libraries[library_id].signup_days)
+    library_ids_order.sort(
+        key=lambda library_id: problem.libraries[library_id].signup_days
+    )
     # start with a random order
     # random.shuffle(library_ids_order)
 
     for _ in range(restarts):
-        library_ids_order = simulated_annealing(library_ids_order, problem, temperature, steps)
+        library_ids_order = simulated_annealing(
+            library_ids_order, problem, temperature, steps
+        )
 
     return to_solution(library_ids_order, problem)
 
 
-def simulated_annealing(library_ids_order: List[int], problem: Problem, temperature: float, steps: int) -> List[int]:
+def simulated_annealing(
+    library_ids_order: List[int], problem: Problem, temperature: float, steps: int
+) -> List[int]:
     current_value = value(library_ids_order, problem)
     reduction_rate = float(temperature / steps)
 
@@ -53,25 +61,26 @@ def simulated_annealing(library_ids_order: List[int], problem: Problem, temperat
 
     return library_ids_order
 
+
 def accept_new(current_value: int, new_value: int, temperature: float) -> bool:
     if current_value <= new_value:
         return True
     # simulated annealing acceptance probability
-    acceptance_probability = math.e ** (- (current_value - new_value) / temperature)
+    acceptance_probability = math.e ** (-(current_value - new_value) / temperature)
     return acceptance_probability > random.random()
 
 
 def random_neighbour(order: List[int]) -> List[int]:
     order = order.copy()
     i = random.randint(0, len(order) - 2)
-    order[i], order[i+1] = order[i+1], order[i]
-    logger.debug("Swapped %s and %s", i, i+1)
+    order[i], order[i + 1] = order[i + 1], order[i]
+    logger.debug("Swapped %s and %s", i, i + 1)
     return order
 
 
 def random_swap(order: List[int]) -> List[int]:
     order = order.copy()
-    [i, j]  = random.sample(range(len(order)), 2)
+    [i, j] = random.sample(range(len(order)), 2)
     order[i], order[j] = order[j], order[i]
     logger.debug("Swapped %s and %s", i, j)
     return order
@@ -90,9 +99,11 @@ def value(library_ids_order: List[int], problem: Problem) -> int:
 
         library_capacity = (problem.number_of_days - day) * library.capacity
         library_book_ids = library.book_ids_set - scanned_book_ids
-        new_book_ids = sorted(library_book_ids,
-                              key=lambda book_id: problem.books[book_id].value,
-                              reverse=True)[:library_capacity]
+        new_book_ids = sorted(
+            library_book_ids,
+            key=lambda book_id: problem.books[book_id].value,
+            reverse=True,
+        )[:library_capacity]
 
         total_value += sum(problem.books[book_id].value for book_id in new_book_ids)
 
@@ -116,9 +127,11 @@ def to_solution(library_ids_order: List[int], problem: Problem) -> Solution:
 
         capacity = (problem.number_of_days - day) * library.capacity
         library_book_ids = library.book_ids_set - scanned_book_ids
-        new_book_ids = sorted(library_book_ids,
-                              key=lambda book_id: problem.books[book_id].value,
-                              reverse=True)[:capacity]
+        new_book_ids = sorted(
+            library_book_ids,
+            key=lambda book_id: problem.books[book_id].value,
+            reverse=True,
+        )[:capacity]
 
         for book_id in new_book_ids:
             solution.scanning_queue[-1].queue_book(book_id)
@@ -126,4 +139,3 @@ def to_solution(library_ids_order: List[int], problem: Problem) -> Solution:
         scanned_book_ids.update(new_book_ids)
 
     return solution
-
