@@ -53,5 +53,13 @@ def best_triple(pizza_compatibility_array, available_pizzas):
     np.delete(available_pizzas, np.where(available_pizzas == best_two_pizzas), 0)
     best_third_pizza = np.where(pizza_compatibility_array[available_pizzas, yummy_pizza] == np.amax(pizza_compatibility_array[available_pizzas, yummy_pizza]))
     three_pizzas = np.concatenate(two_pizzas, np.array(available_pizzas[best_third_pizza]))
+    three_pizzas = np.concatenate((two_pizzas_index, index_third_pizza))
     return three_pizzas
 
+<<<<<<< Updated upstream
+=======
+
+mask_array = np.array(range(pizza_compatibility_array.shape[0]))
+bt = best_triple(pizza_compatibility_array, mask_array)
+print(bt)
+>>>>>>> Stashed changes
