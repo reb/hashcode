@@ -35,8 +35,10 @@ def score_pizza(*pizzas):
     """Return a score for a delivery consisting of these pizzas"""
     return len(set.union(*pizzas)) ** 2
 
+
 bp = best_pair(pizzas, pizza_compatibility_array, tuple(range(N)))
 print(bp)
+
 
 def best_triple(pizza_compatibility_array, available_pizzas):
     best_two_pizzas_all = best_pair(pizzas, pizza_compatibility_array)
@@ -55,10 +57,7 @@ def best_triple(pizza_compatibility_array, available_pizzas):
     three_pizzas = np.concatenate((two_pizzas_index, index_third_pizza))
     return three_pizzas
 
-<<<<<<< Updated upstream
-=======
 
 mask_array = np.array(range(pizza_compatibility_array.shape[0]))
 bt = best_triple(pizza_compatibility_array, mask_array)
 print(bt)
->>>>>>> Stashed changes
