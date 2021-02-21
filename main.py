@@ -85,6 +85,8 @@ def main():
 
     for input_file in input_files:
         problem = read_file(input_file, args.problem_name, problem_module.read)
+        problem.solver_name = args.solver
+        problem.input_file_name = input_file
         solution = solver.solve(problem)
 
         if args.analyze:
