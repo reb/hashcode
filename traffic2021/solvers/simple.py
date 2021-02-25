@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 from traffic2021.problem import *#Problem, Solution, GreenLight
 import numpy as np
+=======
+import logging
+
+from traffic2021.problem import Problem, Solution, GreenLight, score
+
+logger = logging.getLogger(__name__)
+>>>>>>> master
 
 
 def solve2(problem: Problem) -> Solution:
@@ -11,6 +19,7 @@ def solve2(problem: Problem) -> Solution:
         ]
         solution.schedule[intersection.id].set_street_schedule(street_schedule)
 
+    logger.info(f"Score for this solution is: {score(problem, solution)}")
     return solution
 
 
