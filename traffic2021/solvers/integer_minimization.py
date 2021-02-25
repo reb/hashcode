@@ -35,8 +35,12 @@ def solve(problem: Problem) -> Solution:
     def objective(example_sol):
         return -score(problem, array_to_sol(example_sol, problem))
 
-    starting_point = np.ones(number_of_lights(problem))
-    optimized_schedule = scipy.optimize.minimize(objective, starting_point, method='nelder-mead')
+    n_lights = number_of_lights(problem)
+    all_time = problem.duration
+    n_roads = len(problem.streets)
+    max_time = np.min(all_time, (np.rint(all_time/n_roads *10)).astype('int'))
+    starting_point = np.random.randint(0, high=max_time, size=n_lights)
+    optimized_schedule = scipy.optimize.minimize(objective, starting_point, method='nelder-mead', options={'disp':True})
 
     if optimized_schedule.success:
         print('Converged to')
@@ -46,7 +50,7 @@ def solve(problem: Problem) -> Solution:
         print("failed to converge")
         print(optimized_schedule.message)
     sol = optimized_schedule.x
-    solution_vector_int = np.rint(sol)
+    solution_vector_int = np.rint(sol).astype('int')
 
     logger.debug('Starting score')
     logger.debug(score(problem, array_to_sol(starting_point, problem)))

@@ -1,5 +1,6 @@
 import logging
 from typing import List, Dict
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -151,6 +152,7 @@ def score(problem: Problem, solution: Solution):
 
         # update t
         simulation.t += 1
+    print(simulation.score, datetime.now())
 
     return simulation.score
 
