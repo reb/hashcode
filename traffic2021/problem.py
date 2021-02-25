@@ -1,4 +1,4 @@
-from typing import List, Set, Dict, Tuple
+from typing import List, Dict
 
 
 class Street:
@@ -15,7 +15,8 @@ class Vehicle:
 
 
 class Intersection:
-    def __init__(self):
+    def __init__(self, _id: int):
+        self.id = _id
         self.streets = []
 
     def add_street(self, street_name: str):
@@ -36,18 +37,33 @@ class Problem:
         self.streets = streets
         self.vehicles = vehicles
 
-        self.intersections = []
-        for _ in range(amount_of_intersections):
-            self.intersections.append(Intersection())
+        self.intersections = [Intersection(i) for i in range(amount_of_intersections)]
 
         for street in streets.values():
             self.intersections[street.end].add_street(street.name)
 
 
-class Solution:
-    def __init__(self):
+class GreenLight:
+    def __init__(self, street_name: str, duration: int):
+        self.street_name = street_name
+        self.duration = duration
 
-        self.paths = []
+
+class IntersectionSchedule:
+    def __init__(self, _id: int):
+        self.id = _id
+        self.light_schedule = []
+
+    def set_street_schedule(self, light_schedule: List[GreenLight]):
+        self.light_schedule = light_schedule
+
+
+class Solution:
+    def __init__(self, problem: Problem):
+        self.schedule = [
+            IntersectionSchedule(intersection.id)
+            for intersection in problem.intersections
+        ]
 
 
 def read(text: str) -> Problem:
@@ -69,6 +85,12 @@ def read(text: str) -> Problem:
 
 
 def write(solution: Solution) -> str:
-    output_lines = [f"{0}"]
+    output_lines = [f"{len(solution.schedule)}"]
 
-    return "\n".join((output_lines))
+    for intersection_schedule in solution.schedule:
+        output_lines.append(f"{intersection_schedule.id}")
+        output_lines.append(f"{len(intersection_schedule.light_schedule)}")
+        for green_light in intersection_schedule.light_schedule:
+            output_lines.append(f"{green_light.street_name} {green_light.duration}")
+
+    return "\n".join(output_lines)
