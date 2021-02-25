@@ -79,9 +79,9 @@ def array_to_sol(vec, problem: Problem) -> Solution:
 
 
 def number_of_lights(problem):
-    n = 1
-    for i in range(problem.amount_of_intersections):
-        n = n * len(problem.intersections(i).streets)
+    n = 0
+    for i in range(len(problem.intersections)):
+        n = n + len(problem.intersections[i].streets)
     return n
 
 

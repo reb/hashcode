@@ -46,5 +46,5 @@ def solve(problem: Problem) -> Solution:
         print(optimized_schedule.message)
 
     sol = optimized_schedule.x
-    sol_integer = np.rint(sol)
-    return array_to_sol(sol_integer, problem)
+    solution_vector_int = np.rint(sol).astype('int')
+    return array_to_sol(solution_vector_int, problem)
