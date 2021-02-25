@@ -78,6 +78,13 @@ def array_to_sol(vec, problem: Problem) -> Solution:
     return solution
 
 
+def number_of_lights(problem):
+    n = 1
+    for i in range(problem.amount_of_intersections):
+        n = n * len(problem.intersections(i).streets)
+    return n
+
+
 def read(text: str) -> Problem:
     lines = text.split("\n")
     [d, i, s, _, f] = [int(i) for i in lines[0].split()]

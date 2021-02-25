@@ -1,25 +1,8 @@
-"""from gekko import GEKKO
-
-m = GEKKO(remote=False)
-x = m.Array(m.Var,9,lb=0,ub=7,integer=True)
-
-def f(x):
-    return (481.79/(5+x[0]))+(412.04/(4+x[1]))\
-           +(365.54/(3+x[2]))+(375.88/(3+x[3]))\
-           +(379.75/(3+x[4]))+(632.92/(5+x[5]))\
-           +(127.89/(1+x[6]))+(835.71/(6+x[7]))\
-           +(200.21/(1+x[8]))
-
-m.Minimize(f(x))
-m.Equation(sum(x)==7)
-m.options.SOLVER=1
-m.solve()
-print(x)"""
+from traffic2021.problem import *
 import scipy.optimize
 import numpy as np
-import problem
 
-
+"""
 def objective(x):
     return x[0]**2.0 + x[1]**2.0
 
@@ -44,3 +27,24 @@ else:
 
 sol = result.x
 sol_integer = np.rint(sol)
+"""
+
+
+def solve(problem: Problem) -> Solution:
+
+    def objective(example_sol):
+        return score(array_to_sol(example_sol, problem), problem)
+
+    starting_point = np.ones(number_of_lights(problem))
+    optimized_schedule = scipy.optimize.minimize(objective, starting_point, method='nelder-mead')
+
+    if optimized_schedule.success:
+        print('Converged to')
+        print(optimized_schedule.x)
+    else:
+        print("failed to converge")
+        print(optimized_schedule.message)
+
+    sol = optimized_schedule.x
+    sol_integer = np.rint(sol)
+    return array_to_sol(sol_integer, problem)
