@@ -17,6 +17,7 @@ m.solve()
 print(x)"""
 import scipy.optimize
 import numpy as np
+import problem
 
 
 def objective(x):
@@ -42,4 +43,4 @@ else:
     print(result.message)
 
 sol = result.x
-sol_integer = 
+sol_integer = np.rint(sol)
