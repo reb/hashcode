@@ -94,7 +94,7 @@ class Simulation:
 
         self.score = 0
 
-        self.paths = [vehicle.path for vehicle in problem.vehicles]
+        self.paths = [vehicle.path.copy() for vehicle in problem.vehicles]
         self.arriving_at = {0: list(range(len(self.paths)))}
         self.waiting_at_intersection = []
         for intersection in problem.intersections:
