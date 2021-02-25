@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 tqdm = "*"
 numpy = "*"
+minimize = "*"
+scipy = "*"
 
 [requires]
 python_version = "3.7"
