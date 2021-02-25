@@ -1,13 +1,10 @@
-<<<<<<< HEAD
 from traffic2021.problem import *#Problem, Solution, GreenLight
 import numpy as np
-=======
 import logging
 
 from traffic2021.problem import Problem, Solution, GreenLight, score
 
 logger = logging.getLogger(__name__)
->>>>>>> master
 
 
 def solve2(problem: Problem) -> Solution:
