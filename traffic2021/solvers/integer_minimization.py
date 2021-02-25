@@ -41,10 +41,17 @@ def solve(problem: Problem) -> Solution:
     if optimized_schedule.success:
         print('Converged to')
         print(optimized_schedule.x)
+
     else:
         print("failed to converge")
         print(optimized_schedule.message)
-
     sol = optimized_schedule.x
-    solution_vector_int = np.rint(sol).astype('int')
+    solution_vector_int = np.rint(sol)
+
+    logger.debug('Starting score')
+    logger.debug(score(problem, array_to_sol(starting_point, problem)))
+    logger.debug('ending score ')
+    logger.debug(score(problem, array_to_sol(solution_vector_int, problem)))
+    logger.debug('Solution vector')
+    logger.debug(solution_vector_int)
     return array_to_sol(solution_vector_int, problem)
