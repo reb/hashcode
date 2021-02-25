@@ -40,7 +40,7 @@ bp = best_pair(pizzas, pizza_compatibility_array, tuple(range(N)))
 print(bp)
 
 
-def best_triple(pizza_compatibility_array, available_pizzas):
+def best_triple(pizza, pizza_compatibility_array, available_pizzas):
     best_two_pizzas_all = best_pair(pizzas, pizza_compatibility_array)
     # best_two_pizzas has format (array([2], dtype=int32), array([0], dtype=int32))
     best_two_pizzas = np.sort(best_two_pizzas_all[0])
@@ -55,9 +55,10 @@ def best_triple(pizza_compatibility_array, available_pizzas):
     best_third_pizza = best_third_pizza_position[0]
     index_third_pizza = np.array([available_pizzas[best_third_pizza]])
     three_pizzas = np.concatenate((two_pizzas_index, index_third_pizza))
-    return three_pizzas
+    score = score_pizza(pizzas[three_pizzas[0]], pizzas[three_pizzas[1]], pizzas[three_pizzas[2]])
+    return three_pizzas, score
 
 
 mask_array = np.array(range(pizza_compatibility_array.shape[0]))
-bt = best_triple(pizza_compatibility_array, mask_array)
+bt = best_triple(pizzas, pizza_compatibility_array, mask_array)
 print(bt)
