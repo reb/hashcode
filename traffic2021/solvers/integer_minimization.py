@@ -33,7 +33,7 @@ sol_integer = np.rint(sol)
 def solve(problem: Problem) -> Solution:
 
     def objective(example_sol):
-        return score(array_to_sol(example_sol, problem), problem)
+        return -score(problem, array_to_sol(example_sol, problem))
 
     starting_point = np.ones(number_of_lights(problem))
     optimized_schedule = scipy.optimize.minimize(objective, starting_point, method='nelder-mead')
