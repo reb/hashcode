@@ -66,6 +66,18 @@ class Solution:
         ]
 
 
+def array_to_sol(vec, problem: Problem) -> Solution:
+    solution = Solution(problem)
+    index = 0
+    for intersection in problem.intersections:
+        street_schedule = []
+        for street_name in intersection.streets:
+            street_schedule.append(GreenLight(street_name, vec[index]))
+            index = index + 1
+        solution.schedule[intersection.id].set_street_schedule(street_schedule)
+    return solution
+
+
 def read(text: str) -> Problem:
     lines = text.split("\n")
     [d, i, s, _, f] = [int(i) for i in lines[0].split()]
