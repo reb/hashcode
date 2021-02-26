@@ -38,9 +38,18 @@ def solve(problem: Problem) -> Solution:
     n_lights = number_of_lights(problem)
     all_time = problem.duration
     n_roads = len(problem.streets)
-    max_time = np.min(all_time, (np.rint(all_time/n_roads *10)).astype('int'))
-    starting_point = np.random.randint(0, high=max_time, size=n_lights)
-    optimized_schedule = scipy.optimize.minimize(objective, starting_point, method='nelder-mead', options={'disp':True})
+    best_time = np.rint(all_time/n_roads * 10)
+    best_time_int = best_time.astype('int')
+    max_time = np.min([all_time, best_time_int])
+    best_point = np.ones(n_lights)
+    best_score = score(problem, array_to_sol(best_point, problem))
+    for i in range(10):
+        other_point = np.random.uniform(0, high=max_time, size=n_lights)
+        score_now = score(problem, array_to_sol(other_point, problem))
+        if score_now > best_score:
+            best_point = other_point
+            best_score = score_now
+    optimized_schedule = scipy.optimize.minimize(objective, best_point, method='nelder-mead', options={'disp':True})
 
     if optimized_schedule.success:
         print('Converged to')

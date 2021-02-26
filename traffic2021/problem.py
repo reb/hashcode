@@ -1,6 +1,7 @@
 import logging
 from typing import List, Dict
 from datetime import datetime
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +164,7 @@ def array_to_sol(vec, problem: Problem) -> Solution:
     for intersection in problem.intersections:
         street_schedule = []
         for street_name in intersection.streets:
-            street_schedule.append(GreenLight(street_name, vec[index]))
+            street_schedule.append(GreenLight(street_name, np.max([vec[index], 0])))
             index = index + 1
         solution.schedule[intersection.id].set_street_schedule(street_schedule)
     return solution
