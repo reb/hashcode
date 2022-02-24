@@ -16,7 +16,7 @@ def mentor_contributors(contributors: list[Contributor], projects: list[Project]
                         if iter == iter_mentor:
                             continue
                         if contributors[iter_mentor].skills.name == project.role[iter].skills.name:
-                            if contributors[iter_mentor].skills.level >= project.role[iter].skills.level
+                            if contributors[iter_mentor].skills.level >= project.role[iter].skills.level:
                                 bool_mentor = 1
                                 break
                     if bool_mentor:
