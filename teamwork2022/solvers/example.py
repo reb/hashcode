@@ -17,4 +17,9 @@ def solve(problem: Problem) -> Solution:
         for role in project.roles:
             logger.debug(f"{role.name} level: {role.level}")
 
+    # be stupid and plan a just the amount of people we need
+    all_contributors = [contributor.name for contributor in problem.contributors]
+    for project in problem.projects:
+        solution.plan_project(project.name, all_contributors[:len(project.roles)])
+
     return solution
