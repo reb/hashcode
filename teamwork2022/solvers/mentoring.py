@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger("mentoring.py")
 
 
-def mentor_contributors(contributors: list[Contributor], project: Project):
+def mentor_contributors(contributors, project: Project):
     if not bool_complete(contributors, project):
         return contributors
     for iter_role in range(len(project.roles)):
@@ -17,7 +17,7 @@ def mentor_contributors(contributors: list[Contributor], project: Project):
     return contributors
 
 
-def bool_complete(contributors: list[Contributor], project: Project):
+def bool_complete(contributors, project: Project):
     n_contr = len(contributors)
     n_roles = len(project.roles)
     if n_contr != n_roles:
@@ -35,7 +35,7 @@ def bool_complete(contributors: list[Contributor], project: Project):
     return True
 
 
-def find_a_mentor(contributors: list[Contributor], skill: Skill):
+def find_a_mentor(contributors, skill: Skill):
     n_contr = len(contributors)
     for iter_mentor in range(n_contr):
         if contributors[iter_mentor].skills.name == skill.name:
