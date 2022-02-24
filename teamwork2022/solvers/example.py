@@ -7,19 +7,34 @@ logger = logging.getLogger("example.py")
 def solve(problem: Problem) -> Solution:
     solution = Solution()
 
-    for contributor in problem.contributors:
+    for contributor in problem.contributors.values():
         logger.debug(contributor.name)
-        for skill in contributor.skills:
+        for skill in contributor.skills.values():
             logger.debug(f"{skill.name} level: {skill.level}")
 
-    for project in problem.projects:
+    for project in problem.projects.values():
         logger.debug(f"{project.name} days: {project.days}  best_before: {project.best_before} score: {project.score}")
         for role in project.roles:
             logger.debug(f"{role.name} level: {role.level}")
 
-    # be stupid and plan a just the amount of people we need
-    all_contributors = [contributor.name for contributor in problem.contributors]
-    for project in problem.projects:
-        solution.plan_project(project.name, all_contributors[:len(project.roles)])
+    contributors_by_skills = {}
+
+    for contributor in problem.contributors.values():
+        for skill in contributor.skills.values():
+            contributors_by_skills.setdefault(skill.name, []).append(contributor)
+
+    # be stupid and plan the first suitable person
+    for project in problem.projects.values():
+        project_contributors = []
+        for role in project.roles:
+            for contributor in contributors_by_skills[role.name]:
+                if contributor.skills[role.name].level >= role.level and contributor.name not in project_contributors:
+                    project_contributors.append(contributor.name)
+                    break
+
+        if len(project_contributors) == len(project.roles):
+            logger.debug(f"Planning {project.name} with {project_contributors}")
+            solution.plan_project(project.name, project_contributors)
+
 
     return solution
