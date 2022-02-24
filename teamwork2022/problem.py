@@ -32,7 +32,10 @@ class Problem:
 
 class Solution:
     def __init__(self):
-        pass
+        self.planned_projects = []
+
+    def plan_project(self, project, contributors):
+        self.planned_projects.append((project, contributors))
 
 
 def read(text: str) -> Problem:
@@ -61,4 +64,12 @@ def read(text: str) -> Problem:
 
 
 def write(solution: Solution) -> str:
-    return ""
+    output = []
+    # number of planned projects
+    output.append(str(len(solution.planned_projects)))
+
+    for (project, contributors) in solution.planned_projects:
+        output.append(project)
+        output.append(" ".join(contributors))
+
+    return "\n".join(output)
