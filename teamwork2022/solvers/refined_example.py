@@ -24,7 +24,8 @@ def solve(problem: Problem) -> Solution:
             contributors_by_skills.setdefault(skill.name, []).append(contributor)
 
     # be stupid and plan the first suitable person
-    for min_level in range(3):
+    for min_level in range(5):
+        delete_keys = []
         for project in problem.projects.values():
             learning_opportunity = False
             for role in project.roles:
@@ -43,6 +44,9 @@ def solve(problem: Problem) -> Solution:
             if len(project_contributors) == len(project.roles):
                 logger.debug(f"Planning {project.name} with {project_contributors}")
                 solution.plan_project(project.name, project_contributors)
-                del problem.projects[project.name]
+                delete_keys.append(project.name)
+
+        for key in delete_keys:
+            del problem.projects[key]
 
     return solution

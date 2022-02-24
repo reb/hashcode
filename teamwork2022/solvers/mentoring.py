@@ -17,7 +17,7 @@ def bool_complete(contributors: list[Contributor], project: Project):
     n_contr = len(contributors)
     n_roles = len(project.roles)
     if n_contr != n_roles:
-        return 0
+        return False
     for iter in range(n_roles):
         skill = project.roles[iter].skills
         for iter_skill_cont in contributors[iter].skills:
@@ -25,15 +25,15 @@ def bool_complete(contributors: list[Contributor], project: Project):
                 if contributors[iter].skills.level >= skill.level:
                     break
                 if contributors[iter].skills.level < skill.level - 1:
-                    return 0
+                    return False
                 if find_a_mentor(contributors, skill):
                     break
                 else:
-                    return 0
+                    return False
             else:
                 if skill.level > 1:
-                    return 0
-    return 1
+                    return False
+    return True
 
 
 def find_a_mentor(contributors: list[Contributor], skill: Skill):
