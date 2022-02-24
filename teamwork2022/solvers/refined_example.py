@@ -53,7 +53,6 @@ def solve(problem: Problem) -> Solution:
                     for skill in contributor.skills.values():
                         contributors_by_skills.setdefault(skill.name, []).append(contributor)
 
-
         for key in delete_keys:
             del problem.projects[key]
 
