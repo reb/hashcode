@@ -4,24 +4,15 @@ import numpy as np
 
 def mentor_contributors(contributors: list[Contributor], projects: list[Project]):
     for project in projects:
+        if not bool_complete(contributors, project):
+            continue
         n_contr = len(contributors)
         n_roles = len(project.roles)
         for iter in range(np.min(n_contr, n_roles)):
-            if contributors[iter].skills.name == project.roles[iter].skills.name:
-                if contributors[iter].skills.level == project.roles[iter].skills.level:
-                    contributors[iter].skills.level = contributors[iter].skills.level +1
-                if contributors[iter].skills.level == project.roles[iter].skills.level - 1:
-                    # check all other contributors for a mentor
-                    bool_mentor = 0
-                    for iter_mentor in range(n_contr):
-                        if iter == iter_mentor:
-                            continue
-                        if contributors[iter_mentor].skills.name == project.roles[iter].skills.name:
-                            if contributors[iter_mentor].skills.level >= project.roles[iter].skills.level:
-                                bool_mentor = 1
-                                break
-                    if bool_mentor:
-                        contributors[iter].skills.level = contributors[iter].skills.level + 1
+            for iter_contributor_skill in range(len(contributors[iter].skills)):
+                if contributors[iter].skills[iter_contributor_skill].name == project.roles[iter].skills.name:
+                    if contributors[iter].skills[iter_contributor_skill].level <= project.roles[iter].skills.level:
+                        contributors[iter].skills[iter_contributor_skill].level = contributors[iter].skills[iter_contributor_skill].skills.level + 1
     return
 
 
