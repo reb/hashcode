@@ -31,15 +31,16 @@ sol_integer = np.rint(sol)
 
 
 def solve(problem: Problem) -> Solution:
-
     def objective(example_sol):
-        return -score(problem, array_to_sol(example_sol, problem))
+        return -fast_score(problem, array_to_sol(example_sol, problem))
 
-    starting_point = np.ones(number_of_lights(problem))
-    optimized_schedule = scipy.optimize.minimize(objective, starting_point, method='nelder-mead')
+    starting_point = np.ones(number_of_lights(problem)) / 2
+    optimized_schedule = scipy.optimize.minimize(
+        objective, starting_point, method="nelder-mead"
+    )
 
     if optimized_schedule.success:
-        print('Converged to')
+        print("Converged to")
         print(optimized_schedule.x)
 
     else:
@@ -48,10 +49,6 @@ def solve(problem: Problem) -> Solution:
     sol = optimized_schedule.x
     solution_vector_int = np.rint(sol)
 
-    logger.debug('Starting score')
-    logger.debug(score(problem, array_to_sol(starting_point, problem)))
-    logger.debug('ending score ')
-    logger.debug(score(problem, array_to_sol(solution_vector_int, problem)))
-    logger.debug('Solution vector')
-    logger.debug(solution_vector_int)
-    return array_to_sol(solution_vector_int, problem)
+    final_solution = array_to_sol(solution_vector_int, problem)
+    logger.info("Final score: %s", fast_score(problem, final_solution))
+    return final_solution

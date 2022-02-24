@@ -1,5 +1,6 @@
 import logging
 from typing import List, Dict
+from traffic2021 import fast
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +62,9 @@ class IntersectionSchedule:
     def set_street_schedule(self, light_schedule: List[GreenLight]):
         self.light_schedule = light_schedule
         self.total_cycle = sum(l.duration for l in light_schedule)
+
+    def tuples(self):
+        return [(g_l.street_name, g_l.duration) for g_l in self.light_schedule]
 
 
 class Solution:
@@ -141,7 +145,7 @@ class Simulation:
                     self.arriving_at.setdefault(t_arrive, []).append(v_id)
 
 
-def score(problem: Problem, solution: Solution):
+def score(problem: Problem, solution: Solution) -> int:
     simulation = Simulation(problem, solution)
 
     # main loop
@@ -153,6 +157,26 @@ def score(problem: Problem, solution: Solution):
         simulation.t += 1
 
     return simulation.score
+
+
+def fast_score(problem: Problem, solution: Solution) -> int:
+    street_lengths = {street.name: street.length for street in problem.streets.values()}
+    street_ends = {street.name: street.end for street in problem.streets.values()}
+    light_schedule_streets = [i_s.tuples() for i_s in solution.schedule]
+    light_schedule_total_cycles = [i_s.total_cycle for i_s in solution.schedule]
+    paths = [vehicle.path.copy() for vehicle in problem.vehicles]
+
+    score = fast.score(
+        street_lengths,
+        street_ends,
+        problem.bonus,
+        problem.duration,
+        paths,
+        light_schedule_streets,
+        light_schedule_total_cycles,
+    )
+    logger.debug("Current score: %s", score)
+    return score
 
 
 def array_to_sol(vec, problem: Problem) -> Solution:
@@ -193,9 +217,14 @@ def read(text: str) -> Problem:
 
 
 def write(solution: Solution) -> str:
-    output_lines = [f"{len(solution.schedule)}"]
+    # filter out empty intersections
+    schedule = [i_s for i_s in solution.schedule if i_s.total_cycle > 0]
 
-    for intersection_schedule in solution.schedule:
+    output_lines = [f"{len(schedule)}"]
+
+    for intersection_schedule in schedule:
+        if intersection_schedule.total_cycle == 0:
+            continue
         output_lines.append(f"{intersection_schedule.id}")
         output_lines.append(f"{len(intersection_schedule.light_schedule)}")
         for green_light in intersection_schedule.light_schedule:
