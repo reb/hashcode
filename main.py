@@ -42,7 +42,7 @@ def setup_logging(debug):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Solve awesome HashCode 2019")
+    parser = argparse.ArgumentParser(description="Solve HashCode problems")
 
     inputs = parser.add_mutually_exclusive_group()
     inputs.add_argument("--all", action="store_true", dest="all_input_files")
