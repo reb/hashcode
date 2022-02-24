@@ -2,18 +2,15 @@ from teamwork2022.problem import Solution, Problem, Project, Contributor, Skill
 import numpy as np
 
 
-def mentor_contributors(contributors: list[Contributor], projects: list[Project]):
-    for project in projects:
-        if not bool_complete(contributors, project):
-            continue
-        n_contr = len(contributors)
-        n_roles = len(project.roles)
-        for iter in range(np.min(n_contr, n_roles)):
-            for iter_contributor_skill in range(len(contributors[iter].skills)):
-                if contributors[iter].skills[iter_contributor_skill].name == project.roles[iter].skills.name:
-                    if contributors[iter].skills[iter_contributor_skill].level <= project.roles[iter].skills.level:
-                        contributors[iter].skills[iter_contributor_skill].level = contributors[iter].skills[iter_contributor_skill].skills.level + 1
-    return
+def mentor_contributors(contributors: list[Contributor], project: Project):
+    if not bool_complete(contributors, project):
+        return contributors
+    for iter_role in range(len(project.roles)):
+        for iter_contributor_skill in range(len(contributors[iter_role].skills)):
+            if contributors[iter_role].skills[iter_contributor_skill].name == project.roles[iter_role].skills.name:
+                if contributors[iter_role].skills[iter_contributor_skill].level <= project.roles[iter_role].skills.level:
+                    contributors[iter_role].skills[iter_contributor_skill].level = contributors[iter_role].skills[iter_contributor_skill].skills.level + 1
+    return contributors
 
 
 def bool_complete(contributors: list[Contributor], project: Project):
