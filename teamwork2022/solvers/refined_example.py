@@ -39,7 +39,7 @@ def solve(problem: Problem) -> Solution:
             project_contributors_name = []
             for role in project.roles:
                 for contributor in contributors_by_skills[role.name]:
-                    if contributor.skills[role.name].level >= role.level and contributor.name not in project_contributors:
+                    if contributor.skills[role.name].level >= role.level and contributor.name not in project_contributors_name:
                         project_contributors_name.append(contributor.name)
                         project_contributors.append(contributor)
                         break
