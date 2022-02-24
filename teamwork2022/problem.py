@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict
 
 
 class Skill:
@@ -14,7 +14,7 @@ class Contributor:
 
 
 class Project:
-    def __init__(self, name, days, score, best_before, roles: List[Skill]):
+    def __init__(self, name, days, score, best_before, roles: Dict[str, Skill]):
         self.name = name
         self.days = days
         self.score = score
@@ -24,7 +24,7 @@ class Project:
 
 class Problem:
     def __init__(
-            self, contributors: List[Contributor], projects: List[Project]
+            self, contributors: Dict[str, Contributor], projects: Dict[str, Project]
     ):
         self.contributors = contributors
         self.projects = projects
@@ -42,23 +42,23 @@ def read(text: str) -> Problem:
     lines = text.split("\n")
     (c, p) = tuple(int(i) for i in lines.pop(0).split())
 
-    contributors = []
+    contributors = {}
     for _ in range(c):
         (c_name, n) = tuple(lines.pop(0).split())
-        skills = []
+        skills = {}
         for _ in range(int(n)):
             (s_name, level) = tuple(lines.pop(0).split())
-            skills.append(Skill(s_name, int(level)))
-        contributors.append(Contributor(c_name, skills))
+            skills[s_name] = Skill(s_name, int(level))
+        contributors[c_name] = Contributor(c_name, skills)
 
-    projects = []
+    projects = {}
     for _ in range(p):
         (p_name, d, s, b, r) = tuple(lines.pop(0).split())
-        roles = []
+        roles = {}
         for _ in range(int(r)):
             (s_name, level) = tuple(lines.pop(0).split())
-            roles.append(Skill(s_name, int(level)))
-        projects.append(Project(p_name, d, s, b, roles))
+            roles[s_name] = Skill(s_name, int(level))
+        projects[p_name] = Project(p_name, d, s, b, roles)
 
     return Problem(contributors, projects)
 
